@@ -1,7 +1,7 @@
-#树莓派安装Typecho 个人博客
+# 树莓派安装Typecho 个人博客
 之前在自己的vps上安装成功了centos系统，然后在树莓派的Debian也测试安装成功
 
-##1 更新源地址为阿里云源。
+## 1更新源地址为阿里云源。
 编辑源：
 sudo nano /etc/apt/sources.list
 打开以后，替换原来源中的链接为阿里云源，替换后大概会如下：
@@ -33,7 +33,7 @@ sudo apt-get install php-apc
 配置 Nginx：
 nano /etc/nginx/nginx.conf
 打开以后找到下面的位置，并修改：
-
+```
 user www-data; 
 worker_processes 1; #修改这里 
 pid /var/run/nginx.pid; 
@@ -51,12 +51,13 @@ gzip_comp_level 6;
 gzip_buffers 16 8k; 
 gzip_http_version 1.1; 
 gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+```
 保存并退出 nginx.conf。
 
 配置 PHP：
 nano /etc/php5/fpm/php.ini
 打开以后找到下面的位置，并修改：
-
+```
 ; Maximum amount of memory a script may consume (128MB) 
 ;http://php.net/memory-limit 
 memory_limit = 32M #修改这里
@@ -70,19 +71,21 @@ memory_limit = 32M #修改这里
 ; to use SCRIPT_FILENAME rather than PATH_TRANSLATED. 
 ;http://php.net/cgi.fix-pathinfo 
 cgi.fix_pathinfo=1 #修改这里
+```
 保存并退出 php.ini。
 
 配置PHP-FPM：
 nano /etc/php5/fpm/php-fpm.conf
 
 找到下面的位置，并修改：
-
+```
 ; The maximum number of processes FPM will fork. This has been design to control 
 ; the global number of processes when using dynamic PM within a lot of pools. 
 ; Use it with caution. 
 ; Note: A value of 0 indicates no limit 
 ; Default Value: 0 
 process.max = 4 #修改这里
+```
 保存并退出 php-fpm.conf。
 
 配置网站的相关配置，先备份一份较为安全：
@@ -99,7 +102,7 @@ index index.html index.htm;
 
 index index.php index.html index.htm;
 接着往下翻页继续修改
-
+```
 #location ~ \.php$ {
 #       fastcgi_split_path_info ^(.+\.php)(/.+)$;
 #       # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
@@ -127,13 +130,15 @@ location ~ \.php$ {
        fastcgi_index index.php;
        include fastcgi_params;
 }
+```
 修改完成以后，测试下PHP是否已经能正常支持
 sudo nano /etc/home/pi/www/index.php #路径为之前配置里面定义的root根目录
 输入如下内容：
-
+```
 <?php
       phpinfo();
 ?>
+```
 重启nginx，和php5-fpm
 sudo /etc/init.d/nginx restart
 sudo /etc/init.d/php5-fpm restart
@@ -147,10 +152,11 @@ http://192.169.100.5/index.php
 sudo chmod 755 /home/pi/www -R
 
 授权后下载最新的安装包并解压，解压完移动目录：
+```
 cd /home/pi/www
 wget http://typecho.org/downloads/1.1-17.10.30-release.tar.gz
 tar zxvf 1.1-17.10.30-release.tar.gz
 mv build/* /home/pi/www
-
+```
 然后就按照官方给出的教程自己设置就 OK 了。
 
